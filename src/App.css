@@ -1,38 +1,264 @@
-.App {
-  text-align: center;
+html,body {
+  background-color: #3b3b3b;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  color: white;
+  margin: 0 !important;
+  font-family: 'Lato', sans-serif;
+  overflow-x: hidden;
+  font-size: 1.5rem;
+  flex-direction: column;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+#root {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: 100%;
+}
+.userInfo {
+  display: flex;
+  flex: 100%;
+  background-color: #5d5d5d;
+  height: 70px;
+  margin: 0 0.5% 1vh;
+  text-transform: capitalize;
+}
+.userInfo:nth-child(3n + 2) {
+  margin: 0 0 1vh;
+}
+.userInfo:nth-last-child(1){
+  margin: 0 0.5% 1vh 0;
+}
+h1,
+h2 {
+  font-size: 3rem;
+  padding: 0;
+  margin: 0;
+  font-weight: normal;
+}
+header {
+  color: white;
+  width: 100vw;
+  background-color: #6441a5;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 3rem;
+  padding: 2.5vh 0;
+}
+#ttvLogo > img {
+  width: 40px;
+  height: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+footer {
+  background-color: #6441a5;
+  height: 70px;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+footer h2 {
+  font-size: 1.5rem;
+}
+footer img {
+  vertical-align: bottom;
+}
+main {
+  width: 100vw;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #3f3f3f;
+  overflow: hidden;
+  padding-top: 10vh;
+  flex: 1 0 auto;
+}
+
+#userList {
+  display: flex;
+  align-content: space-around;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+.avatarImage {
+  width: 70px;
+  height: 70px;
+}
+#inputs {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#wantJson {
+  width: 20px;
+}
+#container {
+  display: flex;
+  position: relative;
+  right: 80px;
+}
+.content{
+  flex: 1 0 auto;
+  display:flex;
+  flex-direction: column;
+  min-height: calc(100vh - 70px);
+}
+#informator {
+  height: 10vh;
+  color: white;
+  padding: 1.5vh 0;
+  display: flex;
+  align-items: center;
+}
+#informator img {
+  padding-right: 0.5vw;
+}
+.nick {
+  margin-left: 1vw;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  width: 100%;
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.container {
+  font-family: 'Lato', sans-serif;
+  width: 600px;
+  margin: 30px auto 0;
+  display: block;
+  background: #3f3f3f;
+  padding: 10px 50px 50px;
 }
 
-@keyframes App-logo-spin {
+/* form starting stylings ------------------------------- */
+.group {
+  position: relative;
+  margin-bottom: 45px;
+}
+input {
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 300px;
+  border: none;
+  border-bottom: 1px solid #6441a5;
+  background-color: #3f3f3f;
+  color: white;
+}
+input:focus {
+  outline: none;
+}
+
+/* LABEL ======================================= */
+label {
+  color: #fff;
+  font-size: 18px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 5px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+/* active state */
+input:focus ~ label,
+input:valid ~ label {
+  top: -20px;
+  font-size: 14px;
+  color: #ffffff;
+}
+.bar {
+  display: block;
+  width: 300px;
+}
+.bar:before,
+.bar:after {
+  content: '';
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: #6441a5;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+.bar:before {
+  left: 50%;
+}
+.bar:after {
+  right: 50%;
+}
+input:focus ~ .bar:before,
+input:focus ~ .bar:after {
+  width: 50%;
+}
+
+.highlight {
+  position: absolute;
+  height: 60%;
+  width: 100px;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+input:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.3s ease;
+  -moz-animation: inputHighlighter 0.3s ease;
+  animation: inputHighlighter 0.3s ease;
+}
+
+@-webkit-keyframes inputHighlighter {
   from {
-    transform: rotate(0deg);
+    background: #6441a5;
   }
   to {
-    transform: rotate(360deg);
+    width: 0;
+    background: transparent;
+  }
+}
+@-moz-keyframes inputHighlighter {
+  from {
+    background: #6441a5;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@keyframes inputHighlighter {
+  from {
+    background: #6441a5;
+  }
+  to {
+    width: 0;
+    background: transparent;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .userInfo {
+    flex: 48%;
+  }
+  main {
+    width: 80vw;
+  }
+}
+@media only screen and (min-width: 1420px) {
+  .userInfo {
+    flex: 32%;
+  }
+  main {
+    width: 80vw;
   }
 }
