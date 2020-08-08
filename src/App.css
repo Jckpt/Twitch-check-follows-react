@@ -1,6 +1,6 @@
 html,
 body {
-  background-color: #3b3b3b;
+  background-color: #111213;
 }
 body {
   color: white;
@@ -18,7 +18,7 @@ body {
 .userInfo {
   display: flex;
   flex: 100%;
-  background-color: #5d5d5d;
+  background-color: #252729;
   height: 70px;
   margin: 0 0.5% 1vh;
   text-transform: capitalize;
@@ -66,7 +66,7 @@ main {
   width: 100vw;
   margin-left: auto;
   margin-right: auto;
-  background-color: #3f3f3f;
+  background-color: #191a1b;
   overflow: hidden;
   padding-top: 10vh;
   flex: 1 0 auto;
@@ -83,20 +83,43 @@ main {
   height: 70px;
 }
 #inputs {
-  margin-left: auto;
-  margin-right: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-#wantJson {
-  width: 20px;
-}
 #container {
   display: flex;
-  position: relative;
-  right: 80px;
+  right: 65px;
+  align-items: baseline;
+}
+
+#button {
+  margin-left: 50px;
+  height: 40px;
+  border: 2px solid #6441a5;
+  outline: none;
+  border-radius: 40px;
+  width: 130px;
+  background-color: #191a1b;
+  font-family: 'Lato', sans-serif;
+  color: #6441a5;
+  font-size: 20px;
+  font-weight: bold;
+  transition: all 0.25s ease;
+}
+#button:active {
+  letter-spacing: 1.5px;
+  transition: all 0.25s ease;
+}
+#button:hover {
+  cursor: pointer;
+  background-color: #6441a5;
+  transition: all 0.25s ease;
+  color: #fff;
+}
+#wantJson {
+  width: 20px;
 }
 .content {
   flex: 1 0 auto;
@@ -128,27 +151,27 @@ main {
   width: 600px;
   margin: 30px auto 0;
   display: block;
-  background: #3f3f3f;
+  background: #191a1b;
   padding: 10px 50px 50px;
 }
 .group {
   position: relative;
   margin-bottom: 45px;
 }
-input {
+.group input {
   font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
   width: 300px;
   border: none;
   border-bottom: 1px solid #6441a5;
-  background-color: #3f3f3f;
+  background-color: #191a1b;
   color: white;
 }
-input:focus {
+.group input:focus {
   outline: none;
 }
-label {
+.group label {
   color: #fff;
   font-size: 18px;
   font-weight: normal;
@@ -161,8 +184,8 @@ label {
   -webkit-transition: 0.2s ease all;
 }
 
-input:focus ~ label,
-input:valid ~ label {
+.group input:focus ~ label,
+.group input:valid ~ label {
   top: -20px;
   font-size: 14px;
   color: #ffffff;
@@ -189,8 +212,8 @@ input:valid ~ label {
 .bar:after {
   right: 50%;
 }
-input:focus ~ .bar:before,
-input:focus ~ .bar:after {
+.group input:focus ~ .bar:before,
+.group input:focus ~ .bar:after {
   width: 50%;
 }
 
@@ -203,7 +226,7 @@ input:focus ~ .bar:after {
   pointer-events: none;
   opacity: 0.5;
 }
-input:focus ~ .highlight {
+.group input:focus ~ .highlight {
   -webkit-animation: inputHighlighter 0.3s ease;
   -moz-animation: inputHighlighter 0.3s ease;
   animation: inputHighlighter 0.3s ease;

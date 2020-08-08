@@ -99,15 +99,14 @@ export default class Logic extends Component {
     });
   };
   handleSubmit = (e) => {
+    e.preventDefault();
     if (this.state.searchChat === '' || this.state.wantedChannel === '') return;
-    else if (e.which === 13) {
-      this.setState({
-        checkedViewers: 0,
-        allChatters: 0,
-      });
-      this.props.clearUsers();
-      this.activate();
-    }
+    this.setState({
+      checkedViewers: 0,
+      allChatters: 0,
+    });
+    this.props.clearUsers();
+    this.activate();
   };
   handleChange = ({ target: { name, value } }) => {
     this.setState({

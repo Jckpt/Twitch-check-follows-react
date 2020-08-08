@@ -12,7 +12,7 @@ export default class Main extends Component {
   }
   getUsers = (user) => {
     this.setState({
-      users: this.state.users.concat(user),
+      users: [...this.state.users, user],
     });
   };
   clearUsers = () => {
