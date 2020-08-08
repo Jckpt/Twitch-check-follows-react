@@ -1,4 +1,5 @@
-html,body {
+html,
+body {
   background-color: #3b3b3b;
 }
 body {
@@ -21,12 +22,6 @@ body {
   height: 70px;
   margin: 0 0.5% 1vh;
   text-transform: capitalize;
-}
-.userInfo:nth-child(3n + 2) {
-  margin: 0 0 1vh;
-}
-.userInfo:nth-last-child(1){
-  margin: 0 0.5% 1vh 0;
 }
 h1,
 h2 {
@@ -103,9 +98,9 @@ main {
   position: relative;
   right: 80px;
 }
-.content{
+.content {
   flex: 1 0 auto;
-  display:flex;
+  display: flex;
   flex-direction: column;
   min-height: calc(100vh - 70px);
 }
@@ -136,8 +131,6 @@ main {
   background: #3f3f3f;
   padding: 10px 50px 50px;
 }
-
-/* form starting stylings ------------------------------- */
 .group {
   position: relative;
   margin-bottom: 45px;
@@ -155,8 +148,6 @@ input {
 input:focus {
   outline: none;
 }
-
-/* LABEL ======================================= */
 label {
   color: #fff;
   font-size: 18px;
@@ -170,7 +161,6 @@ label {
   -webkit-transition: 0.2s ease all;
 }
 
-/* active state */
 input:focus ~ label,
 input:valid ~ label {
   top: -20px;
@@ -254,11 +244,23 @@ input:focus ~ .highlight {
     width: 80vw;
   }
 }
+@media only screen and (min-width: 768px) and (max-width: 1419px) {
+  .userInfo:nth-child(2n + 2) {
+    margin: 0 0.5% 0 0;
+  }
+}
 @media only screen and (min-width: 1420px) {
   .userInfo {
     flex: 32%;
   }
   main {
     width: 80vw;
+  }
+
+  .userInfo:nth-child(3n + 2) {
+    margin: 0 0 1vh;
+  }
+  .userInfo:nth-last-child(1) {
+    margin: 0 0.5% 1vh 0;
   }
 }

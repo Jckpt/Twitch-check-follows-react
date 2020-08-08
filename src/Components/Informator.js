@@ -1,9 +1,5 @@
-import React, { Component } from 'react'
+import React from 'react';
 
-export default class Informator extends Component {
-    render() {
-        return (
-            <div id="informator">{this.props.info}</div>
-        )
-    }
-}
+export default ({ info }) => {
+  return <div id='informator'>{info}</div>;
+};
