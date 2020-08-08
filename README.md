@@ -12,8 +12,6 @@ You'll need to install [node.js](https://nodejs.org/en/) to have access to npm
 
 ### Installation
 
-cd into
-
 ```node
 npm install
 ```
