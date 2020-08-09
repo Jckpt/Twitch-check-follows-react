@@ -7,7 +7,6 @@ export default class Main extends Component {
 
     this.state = {
       users: [],
-      wantJson: false,
     };
   }
   getUsers = (user) => {
@@ -20,16 +19,11 @@ export default class Main extends Component {
       users: [],
     });
   };
-  handleCheckbox = ({ target: { checked } }) => {
-    this.setState({
-      wantJson: checked,
-    });
-  };
   render() {
     return (
       <main>
-        <Logic getUsers={this.getUsers} clearUsers={this.clearUsers} handleCheckbox={this.handleCheckbox} wantJson={this.state.wantJson} />
-        <UserList users={this.state.users} wantJson={this.state.wantJson} />
+        <Logic getUsers={this.getUsers} clearUsers={this.clearUsers} />
+        <UserList users={this.state.users} />
       </main>
     );
   }

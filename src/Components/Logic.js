@@ -15,9 +15,8 @@ export default class Logic extends Component {
     };
   }
   activate = async () => {
-    let searchChat = this.state.searchChat.toLowerCase();
     let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
-      targetUrl = `https://tmi.twitch.tv/group/user/${searchChat}/chatters`;
+      targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat}/chatters`;
     const response = await fetch(proxyUrl + targetUrl);
     const blob = await response.json();
     let {
@@ -55,7 +54,7 @@ export default class Logic extends Component {
   };
   insertToState = async (id, userNick, avatar) => {
     let wantedChannel = this.state.wantedChannel.toLowerCase();
-    if (!this.props.wantJson) avatar = avatar.replace(/300x300/, '70x70');
+    avatar = avatar.replace(/300x300/, '70x70');
     let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
@@ -77,18 +76,11 @@ export default class Logic extends Component {
         });
         let days = this.calculateDate(follows[i].created_at);
         let userElement;
-        if (!this.props.wantJson) {
-          userElement = {
-            nick: userNick,
-            followLength: days,
-            avatar,
-          };
-        } else {
-          userElement = {
-            nick: userNick,
-            followLength: days,
-          };
-        }
+        userElement = {
+          nick: userNick,
+          followLength: days,
+          avatar,
+        };
         this.props.getUsers(userElement);
         break;
       } else {
@@ -101,9 +93,16 @@ export default class Logic extends Component {
     }
   };
   changeInfo = (foundChatters) => {
-    this.setState({
-      info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
-    });
+    const stinkers = ['overpow', 'rybsonlol_', 'vysotzky', 'randombrucetv', 'stazjaa', 'shini_waifu', 'kubon_'];
+    if (stinkers.includes(this.state.wantedChannel)) {
+      this.setState({
+        info: `Na czacie użytkownika ${this.state.searchChat} znaleziono ${foundChatters} śmierdzieli oglądających ${this.state.wantedChannel}`,
+      });
+    } else {
+      this.setState({
+        info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
+      });
+    }
   };
   handleSubmit = (e) => {
     e.preventDefault();
@@ -119,13 +118,13 @@ export default class Logic extends Component {
   };
   handleChange = ({ target: { name, value } }) => {
     this.setState({
-      [name]: value,
+      [name]: value.toLowerCase(),
     });
   };
   render() {
     return (
       <div id='inputs'>
-        <Inputs handleChange={this.handleChange} handleSubmit={this.handleSubmit} handleCheckbox={this.props.handleCheckbox} />
+        <Inputs handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <LoadingBar allChatters={this.state.allChatters} checkedViewers={this.state.checkedViewers} />
         <Informator
           changeInfo={this.changeInfo}
