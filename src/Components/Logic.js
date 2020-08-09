@@ -64,7 +64,6 @@ export default class Logic extends Component {
     });
     let data = await response.json();
     let { follows } = data;
-    console.log(`ilosc: ${follows.length} nick: ${userNick}`);
     if (follows.length === 0) {
       this.setState({
         checkedViewers: this.state.checkedViewers + 1,
@@ -72,7 +71,6 @@ export default class Logic extends Component {
     }
     for (let i = 0; i < follows.length; i++) {
       if (follows[i].channel.name === wantedChannel) {
-        console.log(`znaleziono, nick: ${userNick}`);
         found = true;
         this.setState({
           checkedViewers: this.state.checkedViewers + 1,
@@ -88,7 +86,6 @@ export default class Logic extends Component {
         break;
       } else {
         if (follows.length - 1 === i && follows.length % 100 !== 0) {
-          console.log(`nieznaleziono, nick: ${userNick}`);
           this.setState({
             checkedViewers: this.state.checkedViewers + 1,
           });
