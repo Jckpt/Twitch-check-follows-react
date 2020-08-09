@@ -31,6 +31,7 @@ export default class Logic extends Component {
     }
   };
   findID = async (name) => {
+    let page = 0;
     let response = await fetch(`https://api.twitch.tv/kraken/users?login=${name}`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
@@ -41,7 +42,7 @@ export default class Logic extends Component {
     let {
       users: [user],
     } = data;
-    this.insertToState(user._id, name, user.logo);
+    this.insertToState(user._id, name, user.logo, page);
   };
   calculateDate = (followDate) => {
     followDate = followDate.substring(0, 10);
@@ -51,10 +52,11 @@ export default class Logic extends Component {
     diff = Math.trunc(diff);
     return diff;
   };
-  insertToState = async (id, userNick, avatar) => {
+  insertToState = async (id, userNick, avatar, page) => {
+    let found = false;
     let wantedChannel = this.state.wantedChannel.toLowerCase();
     avatar = avatar.replace(/300x300/, '70x70');
-    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels`, {
+    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels/?limit=100&offset=${page * 100}`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
         'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
@@ -62,6 +64,7 @@ export default class Logic extends Component {
     });
     let data = await response.json();
     let { follows } = data;
+    console.log(`ilosc: ${follows.length} nick: ${userNick}`);
     if (follows.length === 0) {
       this.setState({
         checkedViewers: this.state.checkedViewers + 1,
@@ -69,13 +72,14 @@ export default class Logic extends Component {
     }
     for (let i = 0; i < follows.length; i++) {
       if (follows[i].channel.name === wantedChannel) {
+        console.log(`znaleziono, nick: ${userNick}`);
+        found = true;
         this.setState({
           checkedViewers: this.state.checkedViewers + 1,
           foundChatters: this.state.foundChatters + 1,
         });
         let days = this.calculateDate(follows[i].created_at);
-        let userElement;
-        userElement = {
+        let userElement = {
           nick: userNick,
           followLength: days,
           avatar,
@@ -83,12 +87,17 @@ export default class Logic extends Component {
         this.props.getUsers(userElement);
         break;
       } else {
-        if (follows.length - 1 === i) {
+        if (follows.length - 1 === i && follows.length % 100 !== 0) {
+          console.log(`nieznaleziono, nick: ${userNick}`);
           this.setState({
             checkedViewers: this.state.checkedViewers + 1,
           });
         }
       }
+    }
+    if (follows.length === 100 && !found) {
+      page++;
+      this.insertToState(id, userNick, avatar, page);
     }
   };
   changeInfo = (foundChatters) => {
