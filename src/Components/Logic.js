@@ -27,7 +27,6 @@ export default class Logic extends Component {
       allChatters: everyViewer.length,
     });
     for (let j = 0; j < everyViewer.length; j++) {
-      console.log(everyViewer[j]);
       this.findID(everyViewer[j].toLowerCase());
     }
   };
