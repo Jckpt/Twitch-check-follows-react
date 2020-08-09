@@ -10,6 +10,7 @@ export default class Logic extends Component {
       info: '',
       allChatters: 0,
       checkedViewers: 0,
+      foundChatters: 0,
     };
   }
   activate = async () => {
@@ -25,11 +26,13 @@ export default class Logic extends Component {
       chatters: { viewers, vips, moderators },
     } = blob;
     const everyViewer = [...viewers, ...vips, ...moderators];
+    console.log(everyViewer);
     this.setState({
       allChatters: everyViewer.length,
       info: `${this.state.checkedViewers}/${everyViewer.length}`,
     });
     for (let j = 0; j < everyViewer.length; j++) {
+      console.log(everyViewer[j]);
       this.findID(everyViewer[j].toLowerCase());
     }
   };
@@ -65,10 +68,16 @@ export default class Logic extends Component {
     });
     let data = await response.json();
     let { follows } = data;
+    if (follows.length === 0) {
+      this.setState({
+        checkedViewers: this.state.checkedViewers + 1,
+      });
+    }
     for (let i = 0; i < follows.length; i++) {
       if (follows[i].channel.name === wantedChannel) {
         this.setState({
           checkedViewers: this.state.checkedViewers + 1,
+          foundChatters: this.state.foundChatters + 1,
         });
         let days = this.calculateDate(follows[i].created_at);
         let userElement;
