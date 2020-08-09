@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import Informator from './Informator';
 import Inputs from './Inputs';
+import LoadingBar from './LoadingBar';
 export default class Logic extends Component {
   constructor(props) {
     super(props);
     this.state = {
       wantedChannel: '',
       searchChat: '',
-      info: '',
       allChatters: 0,
       checkedViewers: 0,
       foundChatters: 0,
+      info: '',
     };
   }
   activate = async () => {
-    this.setState({
-      info: 'praca praca...',
-    });
     let searchChat = this.state.searchChat.toLowerCase();
     let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
       targetUrl = `https://tmi.twitch.tv/group/user/${searchChat}/chatters`;
@@ -26,10 +24,8 @@ export default class Logic extends Component {
       chatters: { viewers, vips, moderators },
     } = blob;
     const everyViewer = [...viewers, ...vips, ...moderators];
-    console.log(everyViewer);
     this.setState({
       allChatters: everyViewer.length,
-      info: `${this.state.checkedViewers}/${everyViewer.length}`,
     });
     for (let j = 0; j < everyViewer.length; j++) {
       console.log(everyViewer[j]);
@@ -103,8 +99,10 @@ export default class Logic extends Component {
         }
       }
     }
+  };
+  changeInfo = (foundChatters) => {
     this.setState({
-      info: `${this.state.checkedViewers}/${this.state.allChatters}`,
+      info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
     });
   };
   handleSubmit = (e) => {
@@ -113,6 +111,8 @@ export default class Logic extends Component {
     this.setState({
       checkedViewers: 0,
       allChatters: 0,
+      foundChatters: 0,
+      info: '',
     });
     this.props.clearUsers();
     this.activate();
@@ -126,7 +126,14 @@ export default class Logic extends Component {
     return (
       <div id='inputs'>
         <Inputs handleChange={this.handleChange} handleSubmit={this.handleSubmit} handleCheckbox={this.props.handleCheckbox} />
-        <Informator info={this.state.info} />
+        <LoadingBar allChatters={this.state.allChatters} checkedViewers={this.state.checkedViewers} />
+        <Informator
+          changeInfo={this.changeInfo}
+          info={this.state.info}
+          foundChatters={this.state.foundChatters}
+          searchChat={this.state.searchChat}
+          wantedChannel={this.state.wantedChannel}
+        />
       </div>
     );
   }

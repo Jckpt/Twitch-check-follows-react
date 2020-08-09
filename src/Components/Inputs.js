@@ -16,8 +16,6 @@ export default class Inputs extends Component {
           <label>Follow u</label>
         </div>
         <div id='container'>
-          <input type='checkbox' checked={this.props.wantJson} onChange={this.props.handleCheckbox} name='wantJson' />
-          JSON
           <input type='submit' id='button' onClick={this.props.handleSubmit} value='Szukaj' />
         </div>
       </form>

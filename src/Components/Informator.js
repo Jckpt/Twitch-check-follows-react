@@ -1,5 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-export default ({ info }) => {
-  return <div id='informator'>{info}</div>;
-};
+export default class Informator extends Component {
+  componentDidUpdate(prevProps) {
+    if (this.props.foundChatters !== prevProps.foundChatters) {
+      this.props.changeInfo(this.props.foundChatters);
+    }
+  }
+  render() {
+    return <div id='informator'>{this.props.info}</div>;
+  }
+}
