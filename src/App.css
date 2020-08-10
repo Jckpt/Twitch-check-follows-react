@@ -35,11 +35,14 @@ header {
   width: 100vw;
   background-color: #6441a5;
   display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
   font-size: 3rem;
   padding: 2.5vh 0;
+}
+header #tytul,
+#ttvLogo {
+  transition: all 0.25s ease;
 }
 #ttvLogo > img {
   width: 40px;
@@ -91,11 +94,11 @@ main {
 #container {
   display: flex;
   right: 65px;
-  align-items: baseline;
+  justify-content: space-between;
 }
 
 #button {
-  margin-left: 180px;
+  margin-left: 150px;
   height: 40px;
   border: 2px solid #6441a5;
   outline: none;
@@ -266,6 +269,9 @@ main {
   main {
     width: 80vw;
   }
+  header {
+    justify-content: center;
+  }
 }
 @media only screen and (min-width: 768px) and (max-width: 1419px) {
   .userInfo:nth-child(2n + 2) {
@@ -301,4 +307,43 @@ main {
   height: 8px;
   align-self: flex-start;
   transition: 0.5s ease;
+}
+#menu {
+  display: flex;
+  justify-content: space-around;
+  flex-flow: column nowrap;
+  width: 2rem;
+  height: 2rem;
+  padding: 0 20px;
+  z-index: 21;
+  position: fixed;
+  top: 15px;
+  right: 20px;
+}
+#menu div {
+  background-color: #fff;
+  width: 2rem;
+  height: 0.25rem;
+}
+#tooltip {
+  border-radius: 40px;
+  box-sizing: border-box;
+  height: 40px;
+  width: 40px;
+  border: 2px solid #6441a5;
+  color: #6441a5;
+  display: flex;
+  font-size: 20px;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+}
+#tooltip:hover {
+  cursor: pointer;
+  background-color: #6441a5;
+  transition: all 0.25s ease;
+  color: #fff;
+}
+li {
+  cursor: pointer;
 }

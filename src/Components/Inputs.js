@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import Tippy from '@tippy.js/react';
+import 'tippy.js/dist/tippy.css';
+import 'tippy.js/animations/scale-subtle.css';
 export default class Inputs extends Component {
   render() {
     return (
@@ -16,6 +19,16 @@ export default class Inputs extends Component {
           <label>Follow u</label>
         </div>
         <div id='container'>
+          <Tippy
+            content={"Najedź na awatar żeby pokazała się długość follow'a"}
+            placement='down'
+            animation='scale-subtle'
+            arrow={false}
+            duration={200}
+            delay={[75, 0]}
+            distance={8}>
+            <div id='tooltip'>?</div>
+          </Tippy>
           <input type='submit' id='button' onClick={this.props.handleSubmit} value='Szukaj' />
         </div>
       </form>
