@@ -1,48 +1,30 @@
 import React, { Component } from 'react';
-import Informator from './Informator';
-import Inputs from './Inputs';
+import SearchUserForm from './SearchUserForm';
 import LoadingBar from './LoadingBar';
-export default class Logic extends Component {
+import Informator from './Informator';
+export default class SearchUser extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wantedChannel: '',
-      searchChat: '',
-      allChatters: 0,
-      checkedViewers: 0,
-      foundChatters: 0,
-      info: '',
+      searchUser: '',
+      allFollows: 0,
+      checkedFollows: 0,
     };
   }
-  activate = async () => {
-    let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
-      targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat}/chatters`;
-    const response = await fetch(proxyUrl + targetUrl);
-    const blob = await response.json();
-    let {
-      chatters: { viewers, vips, moderators },
-    } = blob;
-    const everyViewer = [...viewers, ...vips, ...moderators];
-    this.setState({
-      allChatters: everyViewer.length,
-    });
-    for (let j = 0; j < everyViewer.length; j++) {
-      this.findID(everyViewer[j].toLowerCase());
-    }
-  };
-  findID = async (name) => {
+  findID = async () => {
     let page = 0;
-    let response = await fetch(`https://api.twitch.tv/kraken/users?login=${name}`, {
+    let response = await fetch(`https://api.twitch.tv/kraken/users?login=${this.state.searchUser}`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
         'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
       },
     });
     let data = await response.json();
+    console.log(data);
     let {
       users: [user],
     } = data;
-    this.insertToState(user._id, name, user.logo, page);
+    this.insertToState(user._id, page);
   };
   calculateDate = (followDate) => {
     followDate = followDate.substring(0, 10);
@@ -52,10 +34,7 @@ export default class Logic extends Component {
     diff = Math.trunc(diff);
     return diff;
   };
-  insertToState = async (id, userNick, avatar, page) => {
-    let found = false;
-    let wantedChannel = this.state.wantedChannel.toLowerCase();
-    avatar = avatar.replace(/300x300/, '70x70');
+  insertToState = async (id, page) => {
     let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels/?limit=100&offset=${page * 100}`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
@@ -64,37 +43,31 @@ export default class Logic extends Component {
     });
     let data = await response.json();
     let { follows } = data;
+    this.setState({
+      allFollows: follows.length,
+    });
+    console.log(follows);
     if (follows.length === 0) {
       this.setState({
-        checkedViewers: this.state.checkedViewers + 1,
+        checkedFollows: this.state.checkedFollows + 1,
       });
     }
     for (let i = 0; i < follows.length; i++) {
-      if (follows[i].channel.name === wantedChannel) {
-        found = true;
-        this.setState({
-          checkedViewers: this.state.checkedViewers + 1,
-          foundChatters: this.state.foundChatters + 1,
-        });
-        let days = this.calculateDate(follows[i].created_at);
-        let userElement = {
-          nick: userNick,
-          followLength: days,
-          avatar,
-        };
-        this.props.getUsers(userElement);
-        break;
-      } else {
-        if (follows.length - 1 === i && follows.length % 100 !== 0) {
-          this.setState({
-            checkedViewers: this.state.checkedViewers + 1,
-          });
-        }
-      }
+      let avatar = follows[i].channel.logo.replace(/300x300/, '70x70');
+      this.setState({
+        checkedFollows: this.state.checkedFollows + 1,
+      });
+      let days = this.calculateDate(follows[i].created_at);
+      let userElement = {
+        nick: follows[i].channel.name,
+        followLength: days,
+        avatar,
+      };
+      this.props.getUsers(userElement);
     }
-    if (follows.length === 100 && !found) {
+    if (follows.length === 100) {
       page++;
-      this.insertToState(id, userNick, avatar, page);
+      this.insertToState(id, page);
     }
   };
   changeInfo = (foundChatters) => {
@@ -111,7 +84,7 @@ export default class Logic extends Component {
   };
   handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.searchChat === '' || this.state.wantedChannel === '') return;
+    if (this.state.searchUser === '') return;
     this.setState({
       checkedViewers: 0,
       allChatters: 0,
@@ -119,7 +92,7 @@ export default class Logic extends Component {
       info: '',
     });
     this.props.clearUsers();
-    this.activate();
+    this.findID();
   };
   handleChange = ({ target: { name, value } }) => {
     this.setState({
@@ -129,8 +102,8 @@ export default class Logic extends Component {
   render() {
     return (
       <div id='inputs'>
-        <Inputs handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <LoadingBar allChatters={this.state.allChatters} checkedViewers={this.state.checkedViewers} />
+        <SearchUserForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        <LoadingBar end={this.state.allFollows} start={this.state.checkedFollows} />
         <Informator
           changeInfo={this.changeInfo}
           info={this.state.info}

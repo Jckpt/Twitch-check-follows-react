@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import Logic from './Logic';
+import SearchChat from './SearchChat';
 import UserList from './UserList';
+import SearchUser from './SearchUser';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 export default class Main extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +24,11 @@ export default class Main extends Component {
   render() {
     return (
       <main>
-        <Logic getUsers={this.getUsers} clearUsers={this.clearUsers} />
+        <Switch>
+          <Route path='/' exact render={() => <SearchChat getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
+          <Route path='/czatu' exact render={() => <SearchChat getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
+          <Route path='/uzytkownika' exact render={() => <SearchUser getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
+        </Switch>
         <UserList users={this.state.users} />
       </main>
     );

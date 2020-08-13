@@ -39,10 +39,7 @@ header {
   justify-content: flex-start;
   font-size: 3rem;
   padding: 2.5vh 0;
-}
-header #tytul,
-#ttvLogo {
-  transition: all 0.25s ease;
+  user-select: none;
 }
 #ttvLogo > img {
   width: 40px;
@@ -58,6 +55,7 @@ footer {
   align-items: center;
   overflow: hidden;
   flex-shrink: 0;
+  user-select: none;
 }
 footer h2 {
   font-size: 1.5rem;
@@ -185,6 +183,7 @@ main {
   transition: 0.2s ease all;
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
+  user-select: none;
 }
 
 .group input:focus ~ label,
@@ -337,6 +336,7 @@ main {
   font-weight: bold;
   justify-content: center;
   align-items: center;
+  user-select: none;
 }
 #tooltip:hover {
   cursor: pointer;

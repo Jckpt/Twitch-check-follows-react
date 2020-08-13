@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import { Link } from 'react-router-dom';
 const Ul = styled.ul`
   flex-flow: column nowrap;
   z-index: 20;
@@ -23,8 +23,12 @@ const Ul = styled.ul`
 export default ({ isOpen }) => {
   return (
     <Ul isOpen={isOpen}>
-      <li>Rewizja czatu</li>
-      <li>Rewizja użytkownika</li>
+      <li>
+        <Link to='/czatu'>Rewizja czatu</Link>
+      </li>
+      <li>
+        <Link to='/uzytkownika'>Rewizja użytkownika</Link>
+      </li>
     </Ul>
   );
 };

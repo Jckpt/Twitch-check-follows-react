@@ -1,11 +1,11 @@
 import React from 'react';
 
-export default ({ allChatters, checkedViewers }) => {
+export default ({ start, end }) => {
   const [value, setValue] = React.useState(0);
 
   React.useEffect(() => {
-    setValue((checkedViewers / allChatters) * 100);
-  }, [allChatters, checkedViewers]);
+    setValue((start / end) * 100);
+  }, [start, end]);
 
   return (
     <div id='outerLoadingBar'>
