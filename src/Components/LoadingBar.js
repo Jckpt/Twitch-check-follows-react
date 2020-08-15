@@ -9,7 +9,7 @@ export default ({ start, end }) => {
 
   return (
     <div id='outerLoadingBar'>
-      <div id='loadingBar' style={{ width: `${value}%` }}></div>
+      <div id='loadingBar' style={{ width: end === 0 ? 0 : `${value}%` }}></div>
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import SearchUserForm from './SearchUserForm';
 import LoadingBar from './LoadingBar';
 import Informator from './Informator';
+import { calculateDate } from '../utility/utils';
 export default class SearchUser extends Component {
   constructor(props) {
     super(props);
@@ -20,20 +21,13 @@ export default class SearchUser extends Component {
       },
     });
     let data = await response.json();
-    console.log(data);
+
     let {
       users: [user],
     } = data;
     this.insertToState(user._id, page);
   };
-  calculateDate = (followDate) => {
-    followDate = followDate.substring(0, 10);
-    followDate = new Date(followDate);
-    let d = new Date();
-    let diff = new Date(d - Date.parse(followDate)) / 86400000;
-    diff = Math.trunc(diff);
-    return diff;
-  };
+
   insertToState = async (id, page) => {
     let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels/?limit=100&offset=${page * 100}`, {
       headers: {
@@ -44,12 +38,12 @@ export default class SearchUser extends Component {
     let data = await response.json();
     let { follows } = data;
     this.setState({
-      allFollows: follows.length,
+      allFollows: this.state.allFollows + follows.length,
     });
-    console.log(follows);
+
     if (follows.length === 0) {
       this.setState({
-        checkedFollows: this.state.checkedFollows + 1,
+        info: `${this.state.searchUser} nie posiada żadnego follow'a`,
       });
     }
     for (let i = 0; i < follows.length; i++) {
@@ -57,7 +51,7 @@ export default class SearchUser extends Component {
       this.setState({
         checkedFollows: this.state.checkedFollows + 1,
       });
-      let days = this.calculateDate(follows[i].created_at);
+      let days = calculateDate(follows[i].created_at);
       let userElement = {
         nick: follows[i].channel.name,
         followLength: days,
@@ -70,25 +64,12 @@ export default class SearchUser extends Component {
       this.insertToState(id, page);
     }
   };
-  changeInfo = (foundChatters) => {
-    const stinkers = ['overpow', 'rybsonlol_', 'vysotzky', 'randombrucetv', 'stazjaa', 'shini_waifu', 'kubon_'];
-    if (stinkers.includes(this.state.wantedChannel)) {
-      this.setState({
-        info: `Na czacie użytkownika ${this.state.searchChat} znaleziono ${foundChatters} śmierdzieli oglądających ${this.state.wantedChannel}`,
-      });
-    } else {
-      this.setState({
-        info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
-      });
-    }
-  };
   handleSubmit = (e) => {
     e.preventDefault();
     if (this.state.searchUser === '') return;
     this.setState({
-      checkedViewers: 0,
-      allChatters: 0,
-      foundChatters: 0,
+      allFollows: 0,
+      checkedFollows: 0,
       info: '',
     });
     this.props.clearUsers();
@@ -103,14 +84,8 @@ export default class SearchUser extends Component {
     return (
       <div id='inputs'>
         <SearchUserForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <LoadingBar end={this.state.allFollows} start={this.state.checkedFollows} />
-        <Informator
-          changeInfo={this.changeInfo}
-          info={this.state.info}
-          foundChatters={this.state.foundChatters}
-          searchChat={this.state.searchChat}
-          wantedChannel={this.state.wantedChannel}
-        />
+        <LoadingBar start={this.state.checkedFollows} end={this.state.allFollows} />
+        <Informator info={this.state.info} foundChatters={this.state.foundChatters} searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} />
       </div>
     );
   }

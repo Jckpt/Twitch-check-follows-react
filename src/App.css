@@ -25,7 +25,7 @@ body {
 }
 h1,
 h2 {
-  font-size: 3rem;
+  font-size: 2rem;
   padding: 0;
   margin: 0;
   font-weight: normal;
@@ -38,7 +38,7 @@ header {
   align-items: center;
   justify-content: flex-start;
   font-size: 3rem;
-  padding: 2.5vh 0;
+  min-height: 75px;
   user-select: none;
 }
 #ttvLogo > img {
@@ -108,10 +108,15 @@ main {
   font-size: 20px;
   font-weight: bold;
   transition: all 0.25s ease;
+  outline: none;
 }
-#button:active {
+#button:active,
+li:active {
   letter-spacing: 1.5px;
   transition: all 0.25s ease;
+}
+#button:focus {
+  outline: none;
 }
 #button:hover {
   cursor: pointer;
@@ -184,6 +189,7 @@ main {
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
   user-select: none;
+  cursor: pointer;
 }
 
 .group input:focus ~ label,
@@ -268,9 +274,6 @@ main {
   main {
     width: 80vw;
   }
-  header {
-    justify-content: center;
-  }
 }
 @media only screen and (min-width: 768px) and (max-width: 1419px) {
   .userInfo:nth-child(2n + 2) {
@@ -346,4 +349,7 @@ main {
 }
 li {
   cursor: pointer;
+}
+a {
+  outline: 0;
 }

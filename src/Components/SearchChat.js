@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Informator from './Informator';
 import SearchChatForm from './SearchChatForm';
 import LoadingBar from './LoadingBar';
+import { calculateDate } from '../utility/utils';
 export default class SearchChat extends Component {
   constructor(props) {
     super(props);
@@ -44,14 +45,6 @@ export default class SearchChat extends Component {
     } = data;
     this.insertToState(user._id, name, user.logo, page);
   };
-  calculateDate = (followDate) => {
-    followDate = followDate.substring(0, 10);
-    followDate = new Date(followDate);
-    let d = new Date();
-    let diff = new Date(d - Date.parse(followDate)) / 86400000;
-    diff = Math.trunc(diff);
-    return diff;
-  };
   insertToState = async (id, userNick, avatar, page) => {
     let found = false;
     let wantedChannel = this.state.wantedChannel.toLowerCase();
@@ -77,7 +70,7 @@ export default class SearchChat extends Component {
           checkedViewers: this.state.checkedViewers + 1,
           foundChatters: this.state.foundChatters + 1,
         });
-        let days = this.calculateDate(follows[i].created_at);
+        let days = calculateDate(follows[i].created_at);
         let userElement = {
           nick: userNick,
           followLength: days,

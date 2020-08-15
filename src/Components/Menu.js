@@ -14,7 +14,8 @@ const StyledBurger = styled.div`
   div {
     width: 2rem;
     height: 0.25rem;
-    background-color: ${({ isOpen }) => (isOpen ? '#ccc' : '#fff')};
+
+    background-color: ${({ isOpen }) => (isOpen ? '#6441a5' : '#fff')};
     border-radius: 10px;
     transform-origin: 1px;
     transition: all 0.3s linear;
@@ -30,7 +31,7 @@ const StyledBurger = styled.div`
     }
   }
 `;
-export default ({ isOpen, handleOpen }) => {
+export default ({ isOpen, handleOpen, clearUsers }) => {
   return (
     <>
       <StyledBurger isOpen={isOpen} onClick={handleOpen}>
