@@ -20,7 +20,7 @@ export default class SearchChatForm extends Component {
             distance={8}>
             <div id='tooltip'>?</div>
           </Tippy>
-          <input type='submit' id='button' onClick={this.props.handleSubmit} value='Szukaj' />
+          <input type='submit' id='button' onClick={this.props.handleSubmit} value='Rewiduj' />
         </div>
       </form>
     );

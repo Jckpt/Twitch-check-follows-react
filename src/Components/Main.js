@@ -30,7 +30,7 @@ class Main extends Component {
     return (
       <main>
         <Switch>
-          <Route path='/' exact render={() => <SearchUser getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
+          <Route path='/' exact render={() => <SearchUser users={this.state.users} getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
           <Route path='/czatu' render={() => <SearchChat getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
           <Route path='/uzytkownika' render={() => <SearchUser getUsers={this.getUsers} clearUsers={this.clearUsers} />} />
         </Switch>

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 
 export default class Informator extends Component {
   componentDidUpdate(prevProps) {
-    if (this.props.foundChatters !== prevProps.foundChatters) {
-      this.props.changeInfo(this.props.foundChatters);
+    if (this.props.start !== prevProps.start) {
+      this.props.changeInfo(this.props.start);
     }
   }
   render() {

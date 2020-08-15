@@ -92,7 +92,7 @@ export default class SearchChat extends Component {
     }
   };
   changeInfo = (foundChatters) => {
-    const stinkers = ['overpow', 'rybsonlol_', 'vysotzky', 'randombrucetv', 'stazjaa', 'shini_waifu', 'kubon_'];
+    const stinkers = ['overpow', 'rybsonlol_', 'vysotzky', 'randombrucetv', 'stazjaa', 'shini_waifu', 'kubon_', 'gilotyna', 'arquel', 'nervarien'];
     if (stinkers.includes(this.state.wantedChannel)) {
       this.setState({
         info: `Na czacie użytkownika ${this.state.searchChat} znaleziono ${foundChatters} śmierdzieli oglądających ${this.state.wantedChannel}`,
@@ -126,13 +126,7 @@ export default class SearchChat extends Component {
       <div id='inputs'>
         <SearchChatForm searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <LoadingBar end={this.state.allChatters} start={this.state.checkedViewers} />
-        <Informator
-          changeInfo={this.changeInfo}
-          info={this.state.info}
-          foundChatters={this.state.foundChatters}
-          searchChat={this.state.searchChat}
-          wantedChannel={this.state.wantedChannel}
-        />
+        <Informator changeInfo={this.changeInfo} info={this.state.info} start={this.state.foundChatters} searchChat={this.state.searchChat} />
       </div>
     );
   }

@@ -64,6 +64,11 @@ export default class SearchUser extends Component {
       this.insertToState(id, page);
     }
   };
+  changeInfo = () => {
+    this.setState({
+      info: `${this.state.searchUser} ma ${this.state.allFollows} follow'ów`,
+    });
+  };
   handleSubmit = (e) => {
     e.preventDefault();
     if (this.state.searchUser === '') return;
@@ -85,7 +90,7 @@ export default class SearchUser extends Component {
       <div id='inputs'>
         <SearchUserForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <LoadingBar start={this.state.checkedFollows} end={this.state.allFollows} />
-        <Informator info={this.state.info} foundChatters={this.state.foundChatters} searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} />
+        <Informator changeInfo={this.changeInfo} info={this.state.info} start={this.state.checkedFollows} searchChat={this.state.searchChat} />
       </div>
     );
   }

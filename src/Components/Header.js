@@ -5,7 +5,7 @@ export default (props) => {
   const handleOpen = () => setOpen(!isOpen);
   return (
     <header>
-      <h1 className='tytul'>Rewizja {props.desc}</h1>
+      <h1 id='title'>Rewizja {props.desc}</h1>
       <Menu isOpen={isOpen} handleOpen={handleOpen} />
     </header>
   );
