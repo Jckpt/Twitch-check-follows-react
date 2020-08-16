@@ -7,7 +7,7 @@ export default ({ users }) => {
   return (
     <div id='userList'>
       {users.map(({ avatar, nick, followLength }, id) => (
-        <div className='userInfo' style={{ backgroundColor: stinkers.includes(nick) ? 'red' : null }} key={id + 1}>
+        <div className='userInfo' style={{ backgroundColor: stinkers.includes(nick) ? '#471c1c' : null }} key={id + 1}>
           <div>
             <a href={`https://www.twitch.tv/${nick}`}>
               <Tippy

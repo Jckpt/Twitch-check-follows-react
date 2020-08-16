@@ -10,6 +10,7 @@ const StyledBurger = styled.div`
   display: flex;
   justify-content: space-around;
   flex-flow: column nowrap;
+  padding-right: 5px;
   cursor: pointer;
   div {
     width: 2rem;
@@ -31,7 +32,7 @@ const StyledBurger = styled.div`
     }
   }
 `;
-export default ({ isOpen, handleOpen, clearUsers }) => {
+export default ({ isOpen, handleOpen }) => {
   return (
     <>
       <StyledBurger isOpen={isOpen} onClick={handleOpen}>
@@ -39,7 +40,7 @@ export default ({ isOpen, handleOpen, clearUsers }) => {
         <div></div>
         <div></div>
       </StyledBurger>
-      <RightNav isOpen={isOpen} />
+      <RightNav isOpen={isOpen} handleOpen={handleOpen} />
     </>
   );
 };

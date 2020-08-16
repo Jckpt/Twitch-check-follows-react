@@ -8,7 +8,7 @@ export default () => {
         <img src={avatar} alt='' />
       </a>
       <a href='https://github.com/Jckpt/Twitch-check-follows-react' target='_blank' rel='noopener noreferrer'>
-        <p id='sourceCode'>kod źródłowy</p>
+        <p id='sourceCode'>source code</p>
       </a>
     </footer>
   );

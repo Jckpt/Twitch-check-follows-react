@@ -35,11 +35,13 @@ header {
   width: 100vw;
   background-color: #1e2021;
   display: flex;
+  position: fixed;
   align-items: center;
   justify-content: flex-start;
   font-size: 3rem;
   min-height: 75px;
   user-select: none;
+  z-index: 200;
 }
 #ttvLogo > img {
   width: 40px;
@@ -70,7 +72,7 @@ main {
   margin-right: auto;
   background-color: #191a1b;
   overflow: hidden;
-  padding-top: 10vh;
+  padding-top: 150px;
   flex: 1 0 auto;
   flex-direction: row;
 }
