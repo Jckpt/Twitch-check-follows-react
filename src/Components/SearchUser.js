@@ -29,7 +29,8 @@ export default class SearchUser extends Component {
   };
 
   insertToState = async (id, page) => {
-    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels/?limit=100&offset=${page * 100}`, {
+    let howMuch = 100;
+    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels?limit=100&offset=${howMuch * page}&sortby=last_broadcast`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
         'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
@@ -59,7 +60,7 @@ export default class SearchUser extends Component {
       };
       this.props.getUsers(userElement);
     }
-    if (follows.length === 100) {
+    if (follows.length%100===0 || follows.length%99===0) {
       page++;
       this.insertToState(id, page);
     }

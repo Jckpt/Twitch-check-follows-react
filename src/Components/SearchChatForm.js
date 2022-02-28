@@ -8,7 +8,7 @@ export default class SearchChatForm extends Component {
     return (
       <form id='inputs' method='POST' onSubmit={this.props.handleSubmit}>
         <InputText name='searchChat' value={this.props.searchChat} handleChange={this.props.handleChange} label={'Czat użytkownika'} />
-        <InputText name='wantedChannel' value={this.props.wantedChannel} handleChange={this.props.handleChange} label={'Follow u'} />
+        <InputText name='wantedChannel' value={this.props.wantedChannel} handleChange={this.props.handleChange} label={'Follow u użytkownika'} />
         <div id='container'>
           <Tippy
             content={"Najedź na awatar żeby pokazała się długość follow'a"}

@@ -16,7 +16,7 @@ export default class SearchChat extends Component {
     };
   }
   activate = async () => {
-    let proxyUrl = 'https://cors-anywhere.herokuapp.com/',
+    let proxyUrl = 'https://cors-anywhere-ascii.herokuapp.com/',
       targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat}/chatters`;
     const response = await fetch(proxyUrl + targetUrl);
     const blob = await response.json();
@@ -49,7 +49,7 @@ export default class SearchChat extends Component {
     let found = false;
     let wantedChannel = this.state.wantedChannel.toLowerCase();
     avatar = avatar.replace(/300x300/, '70x70');
-    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels/?limit=100&offset=${page * 100}`, {
+    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels?limit=100&offset=${100 * page}&sortby=last_broadcast`, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
         'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
@@ -92,16 +92,9 @@ export default class SearchChat extends Component {
     }
   };
   changeInfo = (foundChatters) => {
-    const stinkers = ['overpow', 'rybsonlol_', 'vysotzky', 'randombrucetv', 'stazjaa', 'shini_waifu', 'kubon_', 'gilotyna', 'arquel', 'nervarien'];
-    if (stinkers.includes(this.state.wantedChannel)) {
-      this.setState({
-        info: `Na czacie użytkownika ${this.state.searchChat} znaleziono ${foundChatters} śmierdzieli oglądających ${this.state.wantedChannel}`,
-      });
-    } else {
       this.setState({
         info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
       });
-    }
   };
   handleSubmit = (e) => {
     e.preventDefault();
