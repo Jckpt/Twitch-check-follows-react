@@ -13,56 +13,67 @@ export default class SearchUser extends Component {
     };
   }
   findID = async () => {
-    let page = 0;
-    let response = await fetch(`https://api.twitch.tv/kraken/users?login=${this.state.searchUser}`, {
+    const response = await fetch(`https://api.twitch.tv/helix/users?login=${this.state.searchUser}`, {
       headers: {
-        Accept: 'application/vnd.twitchtv.v5+json',
-        'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+        'Client-ID': this.props.clientID,
       },
     });
-    let data = await response.json();
-
-    let {
-      users: [user],
-    } = data;
-    this.insertToState(user._id, page);
+    const data = await response.json();
+    const { id } = data.data[0];
+    this.insertToState(id, '');
   };
 
-  insertToState = async (id, page) => {
-    let howMuch = 100;
-    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels?limit=100&offset=${howMuch * page}&sortby=last_broadcast`, {
+  insertToState = async (id, cursor) => {
+    let response = await fetch(`https://api.twitch.tv/helix/users/follows?from_id=${id}&first=100&after=${cursor}`, {
       headers: {
-        Accept: 'application/vnd.twitchtv.v5+json',
-        'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+        'Client-ID': this.props.clientID,
+      },
+    });
+    let responseJson = await response.json();
+    let { total ,data: follows, pagination } = responseJson;
+    let fetchURL = `https://api.twitch.tv/helix/users?login=`
+    let followString = follows.map(follow => `${follow.to_login}&login=`).join('');
+    response = await fetch(`${fetchURL}${followString.slice(0,-7)}`, {
+      headers: {
+        'Authorization': `Bearer ${this.props.accessToken}`,
+        'Client-ID': this.props.clientID,
       },
     });
     let data = await response.json();
-    let { follows } = data;
+    let { "data": users } = data;
     this.setState({
-      allFollows: this.state.allFollows + follows.length,
+      allFollows: total,
     });
 
-    if (follows.length === 0) {
+    if (total === 0) {
       this.setState({
         info: `${this.state.searchUser} nie posiada żadnego follow'a`,
       });
     }
+    for(let i=0;i<follows.length;i++){
+      for(let j=0;j<users.length;j++){
+        if(users[j].login===follows[i].to_login){
+          follows[i].profile_image_url = users[j].profile_image_url;
+          break;
+        }
+      }
+    }
+    console.log(follows);
     for (let i = 0; i < follows.length; i++) {
-      let avatar = follows[i].channel.logo.replace(/300x300/, '70x70');
       this.setState({
         checkedFollows: this.state.checkedFollows + 1,
       });
-      let days = calculateDate(follows[i].created_at);
       let userElement = {
-        nick: follows[i].channel.name,
-        followLength: days,
-        avatar,
+        nick: follows[i].to_name,
+        followLength: calculateDate(follows[i].followed_at),
+        avatar: follows[i].profile_image_url,
       };
       this.props.getUsers(userElement);
     }
-    if (follows.length%100===0 || follows.length%99===0) {
-      page++;
-      this.insertToState(id, page);
+    if (typeof pagination.cursor !== "undefined") {
+      this.insertToState(id, pagination.cursor);
     }
   };
   changeInfo = () => {
@@ -89,7 +100,7 @@ export default class SearchUser extends Component {
   render() {
     return (
       <div id='inputs'>
-        <SearchUserForm handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        <SearchUserForm accessToken={this.props.accessToken} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <LoadingBar start={this.state.checkedFollows} end={this.state.allFollows} />
         <Informator changeInfo={this.changeInfo} info={this.state.info} start={this.state.checkedFollows} searchChat={this.state.searchChat} />
       </div>

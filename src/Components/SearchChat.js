@@ -23,7 +23,9 @@ export default class SearchChat extends Component {
     let {
       chatters: { viewers, vips, moderators },
     } = blob;
+    console.log(viewers);
     const everyViewer = [...viewers, ...vips, ...moderators];
+    console.log(everyViewer.length);
     this.setState({
       allChatters: everyViewer.length,
     });
@@ -31,64 +33,45 @@ export default class SearchChat extends Component {
       this.findID(everyViewer[j].toLowerCase());
     }
   };
-  findID = async (name) => {
-    let page = 0;
-    let response = await fetch(`https://api.twitch.tv/kraken/users?login=${name}`, {
+  findID = async (userName) => {
+    const response = await fetch(`https://api.twitch.tv/helix/users?login=${userName}`, {
       headers: {
-        Accept: 'application/vnd.twitchtv.v5+json',
-        'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+        'Client-ID': this.props.clientID,
       },
     });
-    let data = await response.json();
-    let {
-      users: [user],
-    } = data;
-    this.insertToState(user._id, name, user.logo, page);
+    const data = await response.json();
+    const { id } = data.data[0];
+    this.insertToState(id, '');
   };
-  insertToState = async (id, userNick, avatar, page) => {
-    let found = false;
-    let wantedChannel = this.state.wantedChannel.toLowerCase();
-    avatar = avatar.replace(/300x300/, '70x70');
-    let response = await fetch(`https://api.twitch.tv/kraken/users/${id}/follows/channels?limit=100&offset=${100 * page}&sortby=last_broadcast`, {
+  insertToState = async (id, cursor) => {
+    let response = await fetch(`https://api.twitch.tv/helix/users/follows?from_id=${id}&first=100&after=${cursor}`, {
       headers: {
-        Accept: 'application/vnd.twitchtv.v5+json',
-        'Client-ID': 'k1c1q8lb5qd9oxn9cnfjnh2manhuo0',
+        'Authorization': `Bearer ${this.props.accessToken}`,
+        'Client-ID': this.props.clientID,
       },
     });
-    let data = await response.json();
-    let { follows } = data;
-
-    if (follows.length === 0) {
-      this.setState({
-        checkedViewers: this.state.checkedViewers + 1,
-      });
-    }
-    for (let i = 0; i < follows.length; i++) {
-      if (follows[i].channel.name === wantedChannel) {
-        found = true;
-        this.setState({
-          checkedViewers: this.state.checkedViewers + 1,
-          foundChatters: this.state.foundChatters + 1,
-        });
-        let days = calculateDate(follows[i].created_at);
-        let userElement = {
-          nick: userNick,
-          followLength: days,
-          avatar,
-        };
-        this.props.getUsers(userElement);
-        break;
-      } else {
-        if (follows.length - 1 === i && follows.length % 100 !== 0) {
-          this.setState({
-            checkedViewers: this.state.checkedViewers + 1,
-          });
+    let responseJson = await response.json();
+    let { total ,data: follows, pagination } = responseJson;
+    console.log(responseJson);
+    if (total !== 0) {
+      for (let i = 0; i < follows.length; i++) {
+        if(this.state.wantedChannel===follows[i].to_name.toLowerCase()){
+          let userElement = {
+            nick: follows[i].to_name,
+            followLength: calculateDate(follows[i].followed_at),
+            avatar: follows[i].profile_image_url,
+          };
+          this.props.getUsers(userElement);
         }
       }
     }
-    if (follows.length === 100 && !found) {
-      page++;
-      this.insertToState(id, userNick, avatar, page);
+    this.setState({
+      checkedViewers: this.state.checkedViewers + 1,
+    });
+    if (typeof pagination.cursor !== "undefined") {
+      console.log("siema");
+      this.insertToState(id, pagination.cursor);
     }
   };
   changeInfo = (foundChatters) => {
@@ -117,7 +100,7 @@ export default class SearchChat extends Component {
   render() {
     return (
       <div id='inputs'>
-        <SearchChatForm searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
+        <SearchChatForm accessToken={this.props.accessToken} searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
         <LoadingBar end={this.state.allChatters} start={this.state.checkedViewers} />
         <Informator changeInfo={this.changeInfo} info={this.state.info} start={this.state.foundChatters} searchChat={this.state.searchChat} />
       </div>
