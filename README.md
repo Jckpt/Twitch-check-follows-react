@@ -1,6 +1,6 @@
 # Twitch-check-follows-react
 
-Twitch-check-follows-react is a website build in react that searches for users that are following a chosen streamer. Currently it doesn't work, because of deprecated Kraken Twitch APIs.
+Twitch-check-follows-react is a website build in react that searches for users that are following a chosen streamer.
 
 ## Getting Started
 
