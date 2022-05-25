@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "64647ed1df236430f683e0deb267bd09",
+    "revision": "5e8fdac38dc87f80c70097a21c39b31c",
     "url": "/Twitch-check-follows-react/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Twitch-check-follows-react/static/css/2.e8112f10.chunk.css"
   },
   {
-    "revision": "0f573ae8ecf2697838cb",
+    "revision": "c6fdb3399958bbbeea78",
     "url": "/Twitch-check-follows-react/static/css/main.8071ca1f.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Twitch-check-follows-react/static/js/2.35d3d9da.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "0f573ae8ecf2697838cb",
-    "url": "/Twitch-check-follows-react/static/js/main.3deef76b.chunk.js"
+    "revision": "c6fdb3399958bbbeea78",
+    "url": "/Twitch-check-follows-react/static/js/main.d905b5dc.chunk.js"
   },
   {
     "revision": "a8b57fb5736a9945aeda",
