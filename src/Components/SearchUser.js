@@ -60,7 +60,6 @@ export default class SearchUser extends Component {
         }
       }
     }
-    console.log(follows);
     for (let i = 0; i < follows.length; i++) {
       this.setState({
         checkedFollows: this.state.checkedFollows + 1,

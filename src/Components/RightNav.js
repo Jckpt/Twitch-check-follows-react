@@ -55,7 +55,7 @@ export default ({ isOpen, handleOpen }) => {
         <div id='head'>Rewizja</div>
         <Link to='/czatu' draggable='false'>
           <li>
-            <FontAwesomeIcon icon={faCommentAlt} style={{ fontSize: '20px', paddingRight: '5px', borderRight: '2px solid #fff' }} /> czatu
+            <FontAwesomeIcon icon={faCommentAlt} style={{ fontSize: '20px', paddingRight: '5px', borderRight: '2px solid #fff' }} /> czatu (experimental)
           </li>
         </Link>
         <Link to='/uzytkownika'>

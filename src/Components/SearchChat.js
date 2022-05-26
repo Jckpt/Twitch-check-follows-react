@@ -17,15 +17,13 @@ export default class SearchChat extends Component {
   }
   activate = async () => {
     let proxyUrl = "https://cors-anywhere-ascii.herokuapp.com/",
-      targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat}/chatters`;
+      targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat.toLowerCase()}/chatters`;
     const response = await fetch(proxyUrl + targetUrl);
     const blob = await response.json();
     let {
       chatters: { viewers, vips, moderators },
     } = blob;
     const everyViewer = [...viewers, ...vips, ...moderators];
-    console.log(everyViewer);
-    console.log(everyViewer.length);
     this.setState({
       allChatters: everyViewer.length,
     });
@@ -33,35 +31,33 @@ export default class SearchChat extends Component {
   };
   delay = (ms) => new Promise((res) => setTimeout(res, ms));
   findIDs = async (everyViewer) => {
-    let viewersBatch100 =[];
-    let iterator = 0;
-    while (iterator < everyViewer.length) {
-      iterator += 100;
-      for (let j = iterator-100; j < iterator; j++) {
-        if (j < everyViewer.length) {
-          viewersBatch100[j%100] = everyViewer[j];
+      let viewersBatch100 =[];
+      let iterator = 0;
+      while (iterator < everyViewer.length) {
+        iterator += 100;
+        for (let j = iterator-100; j < iterator; j++) {
+          if (j < everyViewer.length) {
+            viewersBatch100[j%100] = everyViewer[j];
+          }
         }
+        let fetchURL = `https://api.twitch.tv/helix/users?login=`;
+        let viewersString = viewersBatch100
+          .map((viewer) => `${viewer}&login=`)
+          .join("")
+          .slice(0, -7);
+        const response = await fetch(`${fetchURL}${viewersString}`, {
+          headers: {
+            Authorization: `Bearer ${this.props.accessToken}`,
+            "Client-ID": this.props.clientID,
+          },
+        });
+        const { data } = await response.json();
+        for(let i=0;i<data.length;i++){
+          const { id, profile_image_url: avatar, display_name } = data[i];
+          this.insertToState(id, "", avatar, display_name);
+        }
+        viewersBatch100 = [];
       }
-      let fetchURL = `https://api.twitch.tv/helix/users?login=`;
-      let viewersString = viewersBatch100
-        .map((viewer) => `${viewer}&login=`)
-        .join("")
-        .slice(0, -7);
-      const response = await fetch(`${fetchURL}${viewersString}`, {
-        headers: {
-          Authorization: `Bearer ${this.props.accessToken}`,
-          "Client-ID": this.props.clientID,
-        },
-      });
-      const { data } = await response.json();
-      console.log(data);
-      for(let i=0;i<data.length;i++){
-        const { id, profile_image_url: avatar, display_name } = data[i];
-        this.insertToState(id, "", avatar, display_name);
-      }
-      viewersBatch100 = [];
-    }
-
   };
   insertToState = async (id, cursor, avatar, display_name) => {
     try {
@@ -76,16 +72,23 @@ export default class SearchChat extends Component {
       );
       let responseJson = await response.json();
       let { total, data: follows, pagination } = responseJson;
-      console.log(responseJson);
+      if(responseJson.status===429){
+          const errorMessage =  { code : 429, message : responseJson };
+          throw errorMessage;
+      }
       if (total !== 0) {
         for (let i = 0; i < follows.length; i++) {
-          if (this.state.wantedChannel === follows[i].to_name.toLowerCase()) {
+          if (this.state.wantedChannel.toLowerCase() === follows[i].to_name.toLowerCase()) {
             let userElement = {
               nick: display_name,
               followLength: calculateDate(follows[i].followed_at),
               avatar,
             };
             this.props.getUsers(userElement);
+            this.setState({
+              foundChatters: this.state.foundChatters + 1,
+            });
+            this.changeInfo(this.state.foundChatters);
           }
         }
       }
@@ -96,9 +99,7 @@ export default class SearchChat extends Component {
         this.insertToState(id, pagination.cursor, avatar, display_name);
       }
     } catch (err) {
-      console.log(err);
       await this.delay(5000);
-      console.log("waited 5s");
       this.insertToState(id, cursor, avatar, display_name);
     }
   };
@@ -121,7 +122,7 @@ export default class SearchChat extends Component {
   };
   handleChange = ({ target: { name, value } }) => {
     this.setState({
-      [name]: value.toLowerCase(),
+      [name]: value,
     });
   };
   render() {

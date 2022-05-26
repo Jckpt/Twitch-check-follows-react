@@ -5,7 +5,9 @@ import 'tippy.js/animations/scale-subtle.css';
 export default ({ users }) => {
   return (
     <div id='userList'>
-      {users.map(({ avatar, nick, followLength }, id) => (
+      {users.sort((first, second) => {
+            return first.followLength > second.followLength ? -1 : 1;
+          }).map(({ avatar, nick, followLength }, id) => (
         <div className='userInfo' key={id + 1}>
           <div>
             <a href={`https://www.twitch.tv/${nick}`} target="_blank" rel="noopener noreferrer">
