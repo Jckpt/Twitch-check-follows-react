@@ -177,6 +177,14 @@ main {
   background-color: #191a1b;
   color: white;
 }
+.group input:-webkit-autofill,
+.group input:-webkit-autofill:hover, 
+.group input:-webkit-autofill:focus, 
+.group input:-webkit-autofill:active{
+  -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+  -webkit-transition-delay: 9999s;
+  -webkit-text-fill-color: white !important;
+}
 .group input:focus {
   outline: none;
 }

@@ -33,9 +33,9 @@ export default class SearchUser extends Component {
     });
     let responseJson = await response.json();
     let { total ,data: follows, pagination } = responseJson;
-    let fetchURL = `https://api.twitch.tv/helix/users?login=`
-    let followString = follows.map(follow => `${follow.to_login}&login=`).join('');
-    response = await fetch(`${fetchURL}${followString.slice(0,-7)}`, {
+    let fetchURL = `https://api.twitch.tv/helix/users?login=`;
+    let followString = follows.map(follow => `${follow.to_login}&login=`).join('').slice(0,-7);
+    response = await fetch(`${fetchURL}${followString}`, {
       headers: {
         'Authorization': `Bearer ${this.props.accessToken}`,
         'Client-ID': this.props.clientID,

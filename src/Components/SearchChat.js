@@ -1,95 +1,122 @@
-import React, { Component } from 'react';
-import Informator from './Informator';
-import SearchChatForm from './SearchChatForm';
-import LoadingBar from './LoadingBar';
-import { calculateDate } from '../utility/utils';
+import React, { Component } from "react";
+import Informator from "./Informator";
+import SearchChatForm from "./SearchChatForm";
+import LoadingBar from "./LoadingBar";
+import { calculateDate } from "../utility/utils";
 export default class SearchChat extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      wantedChannel: '',
-      searchChat: '',
+      wantedChannel: "",
+      searchChat: "",
       allChatters: 0,
       checkedViewers: 0,
       foundChatters: 0,
-      info: '',
+      info: "",
     };
   }
   activate = async () => {
-    let proxyUrl = 'https://cors-anywhere-ascii.herokuapp.com/',
+    let proxyUrl = "https://cors-anywhere-ascii.herokuapp.com/",
       targetUrl = `https://tmi.twitch.tv/group/user/${this.state.searchChat}/chatters`;
     const response = await fetch(proxyUrl + targetUrl);
     const blob = await response.json();
     let {
       chatters: { viewers, vips, moderators },
     } = blob;
-    console.log(viewers);
     const everyViewer = [...viewers, ...vips, ...moderators];
+    console.log(everyViewer);
     console.log(everyViewer.length);
     this.setState({
       allChatters: everyViewer.length,
     });
-    for (let j = 0; j < everyViewer.length; j++) {
-      this.findID(everyViewer[j].toLowerCase());
-    }
+    this.findIDs(everyViewer);
   };
-  findID = async (userName) => {
-    const response = await fetch(`https://api.twitch.tv/helix/users?login=${userName}`, {
-      headers: {
-        'Authorization': `Bearer ${this.props.accessToken}`,
-        'Client-ID': this.props.clientID,
-      },
-    });
-    const data = await response.json();
-    const { id } = data.data[0];
-    this.insertToState(id, '');
-  };
-  insertToState = async (id, cursor) => {
-    let response = await fetch(`https://api.twitch.tv/helix/users/follows?from_id=${id}&first=100&after=${cursor}`, {
-      headers: {
-        'Authorization': `Bearer ${this.props.accessToken}`,
-        'Client-ID': this.props.clientID,
-      },
-    });
-    let responseJson = await response.json();
-    let { total ,data: follows, pagination } = responseJson;
-    console.log(responseJson);
-    if (total !== 0) {
-      for (let i = 0; i < follows.length; i++) {
-        if(this.state.wantedChannel===follows[i].to_name.toLowerCase()){
-          let userElement = {
-            nick: follows[i].to_name,
-            followLength: calculateDate(follows[i].followed_at),
-            avatar: follows[i].profile_image_url,
-          };
-          this.props.getUsers(userElement);
+  delay = (ms) => new Promise((res) => setTimeout(res, ms));
+  findIDs = async (everyViewer) => {
+    let viewersBatch100 =[];
+    let iterator = 0;
+    while (iterator < everyViewer.length) {
+      iterator += 100;
+      for (let j = iterator-100; j < iterator; j++) {
+        if (j < everyViewer.length) {
+          viewersBatch100[j%100] = everyViewer[j];
         }
       }
+      let fetchURL = `https://api.twitch.tv/helix/users?login=`;
+      let viewersString = viewersBatch100
+        .map((viewer) => `${viewer}&login=`)
+        .join("")
+        .slice(0, -7);
+      const response = await fetch(`${fetchURL}${viewersString}`, {
+        headers: {
+          Authorization: `Bearer ${this.props.accessToken}`,
+          "Client-ID": this.props.clientID,
+        },
+      });
+      const { data } = await response.json();
+      console.log(data);
+      for(let i=0;i<data.length;i++){
+        const { id, profile_image_url: avatar, display_name } = data[i];
+        this.insertToState(id, "", avatar, display_name);
+      }
+      viewersBatch100 = [];
     }
-    this.setState({
-      checkedViewers: this.state.checkedViewers + 1,
-    });
-    if (typeof pagination.cursor !== "undefined") {
-      console.log("siema");
-      this.insertToState(id, pagination.cursor);
+
+  };
+  insertToState = async (id, cursor, avatar, display_name) => {
+    try {
+      let response = await fetch(
+        `https://api.twitch.tv/helix/users/follows?from_id=${id}&first=100&after=${cursor}`,
+        {
+          headers: {
+            Authorization: `Bearer ${this.props.accessToken}`,
+            "Client-ID": this.props.clientID,
+          },
+        }
+      );
+      let responseJson = await response.json();
+      let { total, data: follows, pagination } = responseJson;
+      console.log(responseJson);
+      if (total !== 0) {
+        for (let i = 0; i < follows.length; i++) {
+          if (this.state.wantedChannel === follows[i].to_name.toLowerCase()) {
+            let userElement = {
+              nick: display_name,
+              followLength: calculateDate(follows[i].followed_at),
+              avatar,
+            };
+            this.props.getUsers(userElement);
+          }
+        }
+      }
+      this.setState({
+        checkedViewers: this.state.checkedViewers + 1,
+      });
+      if (typeof pagination.cursor !== "undefined") {
+        this.insertToState(id, pagination.cursor, avatar, display_name);
+      }
+    } catch (err) {
+      console.log(err);
+      await this.delay(5000);
+      console.log("waited 5s");
+      this.insertToState(id, cursor, avatar, display_name);
     }
   };
   changeInfo = (foundChatters) => {
-      this.setState({
-        info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
-      });
+    this.setState({
+      info: `Na czacie użytkownika ${this.state.searchChat} jest ${foundChatters} użytkowników z follow'em u ${this.state.wantedChannel}`,
+    });
   };
   handleSubmit = (e) => {
     e.preventDefault();
-    if (this.state.searchChat === '' || this.state.wantedChannel === '') return;
+    if (this.state.searchChat === "" || this.state.wantedChannel === "") return;
     this.setState({
       checkedViewers: 0,
       allChatters: 0,
       foundChatters: 0,
-      info: '',
+      info: "",
     });
     this.props.clearUsers();
-    console.log(this.state);
     this.activate();
   };
   handleChange = ({ target: { name, value } }) => {
@@ -99,10 +126,24 @@ export default class SearchChat extends Component {
   };
   render() {
     return (
-      <div id='inputs'>
-        <SearchChatForm accessToken={this.props.accessToken} searchChat={this.state.searchChat} wantedChannel={this.state.wantedChannel} handleChange={this.handleChange} handleSubmit={this.handleSubmit} />
-        <LoadingBar end={this.state.allChatters} start={this.state.checkedViewers} />
-        <Informator changeInfo={this.changeInfo} info={this.state.info} start={this.state.foundChatters} searchChat={this.state.searchChat} />
+      <div id="inputs">
+        <SearchChatForm
+          accessToken={this.props.accessToken}
+          searchChat={this.state.searchChat}
+          wantedChannel={this.state.wantedChannel}
+          handleChange={this.handleChange}
+          handleSubmit={this.handleSubmit}
+        />
+        <LoadingBar
+          end={this.state.allChatters}
+          start={this.state.checkedViewers}
+        />
+        <Informator
+          changeInfo={this.changeInfo}
+          info={this.state.info}
+          start={this.state.foundChatters}
+          searchChat={this.state.searchChat}
+        />
       </div>
     );
   }
