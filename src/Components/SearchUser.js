@@ -19,9 +19,16 @@ export default class SearchUser extends Component {
         'Client-ID': this.props.clientID,
       },
     });
-    const data = await response.json();
-    const { id } = data.data[0];
-    this.insertToState(id, '');
+    const {data} = await response.json();
+    if(data.length>0){
+      const { id } = data[0];
+      this.insertToState(id, '');
+    }
+    else{
+      this.setState({
+        info: `Ten użytkownik nie istnieje`,
+      });
+    }
   };
 
   insertToState = async (id, cursor) => {
