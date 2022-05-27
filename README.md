@@ -1,6 +1,8 @@
-# Twitch-check-follows-react
+# Twitch check follows
 
 Twitch-check-follows-react is a website build in react that searches for users that are following a chosen streamer.
+
+![website image](https://i.imgur.com/QPoVPCW.png)
 
 ## Getting Started
 
